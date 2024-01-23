@@ -73,6 +73,8 @@ export const MonthPicker = memo(function MonthPicker(
 
     const onKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape') {
+        e.preventDefault();
+        e.stopPropagation();
         closeMonthPicker();
         return;
       }

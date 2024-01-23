@@ -1,5 +1,6 @@
 import {
-  AFFiNEDatePicker,
+  type DateCell,
+  DatePicker,
   IconButton,
   Menu,
   Scrollable,
@@ -99,14 +100,42 @@ const EditorJournalPanel = (props: EditorExtensionProps) => {
     [journalDate, openJournal]
   );
 
+  const customDayRenderer = useCallback(
+    (cell: DateCell) => {
+      // TODO: add a dot to indicate journal
+      // has performance issue for now, better to calculate it in advance
+      // const hasJournal = !!getJournalsByDate(cell.date.format('YYYY-MM-DD'))?.length;
+      const hasJournal = false;
+      return (
+        <button
+          className={styles.journalDateCell}
+          data-is-date-cell
+          tabIndex={cell.focused ? 0 : -1}
+          data-is-today={cell.isToday}
+          data-not-current-month={cell.notCurrentMonth}
+          data-selected={cell.selected}
+          data-is-journal={isJournal}
+          data-has-journal={hasJournal}
+        >
+          {cell.label}
+          {hasJournal && !cell.selected ? (
+            <div className={styles.journalDateCellDot} />
+          ) : null}
+        </button>
+      );
+    },
+    [isJournal]
+  );
+
   return (
     <div className={styles.journalPanel} data-is-journal={isJournal}>
-      <AFFiNEDatePicker
-        inline
-        value={date}
-        onSelect={onDateSelect}
-        calendarClassName={styles.calendar}
-      />
+      <div className={styles.calendar}>
+        <DatePicker
+          customDayRenderer={customDayRenderer}
+          value={date}
+          onChange={onDateSelect}
+        />
+      </div>
       <JournalConflictBlock date={dayjs(date)} {...props} />
       <JournalDailyCountBlock date={dayjs(date)} {...props} />
     </div>
