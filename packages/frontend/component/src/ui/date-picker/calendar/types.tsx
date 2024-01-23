@@ -27,7 +27,7 @@ export interface DatePickerProps {
 
   /**
    * Customize weekdays, use `,` to separate each day
-   * @default {} `'Sun,Mon,Tue,Wed,Thu,Fri,Sat'`
+   * @default {} `'Su,Mo,Tu,We,Th,Fr,Sa'`
    **/
   weekDays?: string;
 
