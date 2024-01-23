@@ -1,3 +1,4 @@
+import { cssVar } from '@toeverything/theme';
 import { createVar, style } from '@vanilla-extract/css';
 
 // variables
@@ -33,7 +34,7 @@ export const hoverInteractive = style([
         transition: 'background-color 0.2s ease',
       },
       '&:hover::after': {
-        backgroundColor: 'var(--affine-hover-color)',
+        backgroundColor: cssVar('hoverColor'),
       },
     },
   },
@@ -44,7 +45,7 @@ export const focusInteractive = style([
     selectors: {
       '&::before': {
         opacity: 0,
-        boxShadow: '0 0 0 2px var(--affine-brand-color)',
+        boxShadow: `0 0 0 2px ${cssVar('brandColor')}`,
       },
       '&::after': {
         border: '1px solid transparent',
@@ -54,7 +55,7 @@ export const focusInteractive = style([
         opacity: 0.5,
       },
       '&:focus-visible::after': {
-        borderColor: 'var(--affine-brand-color)',
+        borderColor: cssVar('brandColor'),
       },
     },
   },
@@ -65,7 +66,7 @@ export const disabledInteractive = style([
     selectors: {
       '&[disabled], &[aria-disabled="true"]': {
         cursor: 'not-allowed',
-        color: 'var(--affine-text-disable-color)',
+        color: cssVar('textDisableColor'),
       },
     },
   },
@@ -157,7 +158,7 @@ export const headerNavToday = style([
     lineHeight: '22px',
     padding: '0 4px',
     borderRadius: 4,
-    color: 'var(--affine-icon-color)',
+    color: cssVar('iconColor'),
   },
 ]);
 
@@ -178,7 +179,7 @@ export const monthViewHeaderCell = style([
   {
     fontSize: 'var(--affine-font-xs)',
     fontWeight: 500,
-    color: 'var(--affine-text-secondary-color)',
+    color: cssVar('textSecondaryColor'),
     height: 28,
   },
 ]);
@@ -194,22 +195,22 @@ export const monthViewBodyCellInner = style([
     width: '100%',
     height: '100%',
     borderRadius: 8,
-    fontSize: 'var(--affine-font-xs)',
-    color: 'var(--affine-text-primary-color)',
+    fontSize: cssVar('fontSm'),
+    color: cssVar('textPrimaryColor'),
     fontWeight: 400,
 
     selectors: {
       '&[data-is-today="true"]': {
         fontWeight: 600,
-        color: 'var(--affine-brand-color)',
+        color: cssVar('brandColor'),
       },
       '&[data-not-current-month="true"]': {
-        color: 'var(--affine-black-10)',
+        color: cssVar('black10'),
       },
       '&[data-selected="true"]': {
-        backgroundColor: 'var(--affine-brand-color)',
+        backgroundColor: cssVar('brandColor'),
         fontWeight: 500,
-        color: 'var(--affine-pure-white)',
+        color: cssVar('pureWhite'),
       },
     },
   },
@@ -222,7 +223,7 @@ export const yearViewBodyCell = style([monthViewBodyCell, { height: 34 }]);
 export const yearViewBodyCellInner = style([
   monthViewBodyCellInner,
   {
-    fontSize: 'var(--affine-font-base)',
+    fontSize: cssVar('fontBase'),
     fontWeight: 400,
     lineHeight: '24px',
     selectors: {
@@ -230,7 +231,7 @@ export const yearViewBodyCellInner = style([
       // '&[data-is-today="true"]': {},
       '&[data-selected="true"]': {
         background: 'transparent',
-        color: 'var(--affine-text-emphasis-color)',
+        color: cssVar('textEmphasisColor'),
         fontWeight: 500,
       },
     },

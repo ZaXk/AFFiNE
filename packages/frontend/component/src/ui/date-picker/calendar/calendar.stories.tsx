@@ -36,5 +36,5 @@ Basic.args = {
   gapX: 8,
   gapY: 8,
   monthNames: 'Jan,Feb,Mar,Apr,May,Jun,Jul,Aug,Sep,Oct,Nov,Dec',
-  weekDays: 'Sun,Mon,Tue,Wed,Thu,Fri,Sat',
+  weekDays: 'Su,Mo,Tu,We,Th,Fr,Sa',
 };
