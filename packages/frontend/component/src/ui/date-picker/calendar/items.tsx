@@ -142,6 +142,7 @@ export const NavButtons = memo(function NavButtons({
         size="small"
         className={styles.focusInteractive}
         disabled={prevDisabled}
+        data-testid="date-picker-nav-prev"
         onClick={onPrev}
       >
         <ArrowLeftSmallIcon />
@@ -154,6 +155,7 @@ export const NavButtons = memo(function NavButtons({
         size="small"
         className={styles.focusInteractive}
         disabled={nextDisabled}
+        data-testid="date-picker-nav-next"
         onClick={onNext}
       >
         <ArrowRightSmallIcon />
