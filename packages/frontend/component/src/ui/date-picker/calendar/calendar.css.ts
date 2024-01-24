@@ -15,6 +15,7 @@ export const spacerX = style([spacer, { width: 0 }]);
 export const basicInteractive = style({
   cursor: 'pointer',
   position: 'relative',
+  whiteSpace: 'nowrap',
   selectors: {
     '&::before, &::after': {
       content: '',
