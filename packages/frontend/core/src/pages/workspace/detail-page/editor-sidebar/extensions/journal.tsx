@@ -81,6 +81,7 @@ interface JournalBlockProps extends EditorExtensionProps {
 
 const EditorJournalPanel = (props: EditorExtensionProps) => {
   const { workspace, page } = props;
+  const t = useAFFiNEI18N();
   const { journalDate, isJournal } = useJournalInfoHelper(
     page.workspace,
     page.id
@@ -131,6 +132,9 @@ const EditorJournalPanel = (props: EditorExtensionProps) => {
     <div className={styles.journalPanel} data-is-journal={isJournal}>
       <div className={styles.calendar}>
         <DatePicker
+          weekDays={t['com.affine.calendar-date-picker.week-days']()}
+          monthNames={t['com.affine.calendar-date-picker.month-names']()}
+          todayLabel={t['com.affine.calendar-date-picker.today']()}
           customDayRenderer={customDayRenderer}
           value={date}
           onChange={onDateSelect}

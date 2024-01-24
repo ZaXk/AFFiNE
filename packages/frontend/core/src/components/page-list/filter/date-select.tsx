@@ -1,4 +1,5 @@
 import { DatePicker, Popover, type PopoverProps } from '@affine/component';
+import { useAFFiNEI18N } from '@affine/i18n/hooks';
 import dayjs from 'dayjs';
 import { useCallback, useState } from 'react';
 
@@ -15,6 +16,7 @@ export const DateSelect = ({
   value: number;
   onChange: (value: number) => void;
 }) => {
+  const t = useAFFiNEI18N();
   const [open, setOpen] = useState(false);
 
   const onDateChange = useCallback(
@@ -32,6 +34,9 @@ export const DateSelect = ({
       contentOptions={datePickerPopperContentOptions}
       content={
         <DatePicker
+          weekDays={t['com.affine.calendar-date-picker.week-days']()}
+          monthNames={t['com.affine.calendar-date-picker.month-names']()}
+          todayLabel={t['com.affine.calendar-date-picker.today']()}
           value={dayjs(value as number).format('YYYY-MM-DD')}
           onChange={onDateChange}
         />
