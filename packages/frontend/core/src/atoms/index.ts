@@ -14,6 +14,8 @@ export const openOnboardingModalAtom = atom(false);
 export const openSignOutModalAtom = atom(false);
 export const openPaymentDisableAtom = atom(false);
 export const openQuotaModalAtom = atom(false);
+export const openStarAFFiNEModalAtom = atom(false);
+export const openIssueFeedbackModalAtom = atom(false);
 
 export type SettingAtom = Pick<
   SettingProps,

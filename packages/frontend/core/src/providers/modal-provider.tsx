@@ -77,6 +77,16 @@ const CloudQuotaModal = lazy(() =>
     default: module.CloudQuotaModal,
   }))
 );
+const StarAFFiNEModal = lazy(() =>
+  import('../components/affine/star-affine-modal').then(module => ({
+    default: module.StarAFFiNEModal,
+  }))
+);
+const IssueFeedbackModal = lazy(() =>
+  import('../components/affine/issue-feedback-modal').then(module => ({
+    default: module.IssueFeedbackModal,
+  }))
+);
 
 export const Setting = () => {
   const [{ open, workspaceMetadata, activeTab }, setOpenSettingModalAtom] =
@@ -179,6 +189,8 @@ export function CurrentWorkspaceModals() {
           <OnboardingModal />
         </Suspense>
       )}
+      <StarAFFiNEModal />
+      <IssueFeedbackModal />
       <WorkspaceGuideModal />
       {currentWorkspace ? <Setting /> : null}
       {currentWorkspace?.flavour === WorkspaceFlavour.LOCAL && (

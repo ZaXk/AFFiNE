@@ -42,4 +42,11 @@ export const footer = style({
   justifyContent: 'center',
   alignItems: 'center',
   paddingBottom: '20px',
+  gap: '4px',
+  fontSize: 'var(--affine-font-xs)',
+});
+
+export const link = style({
+  color: 'var(--affine-link-color)',
+  cursor: 'pointer',
 });
