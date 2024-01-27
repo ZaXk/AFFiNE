@@ -128,25 +128,6 @@ test('app theme', async ({ page, electronApp }) => {
   }
 });
 
-test('affine onboarding button', async ({ page }) => {
-  await page.getByTestId('help-island').click();
-  await page.getByTestId('easy-guide').click();
-  const onboardingModal = page.locator('[data-testid=onboarding-modal]');
-  await expect(onboardingModal).toBeVisible();
-  const switchVideo = page.locator(
-    '[data-testid=onboarding-modal-switch-video]'
-  );
-  await expect(switchVideo).toBeVisible();
-  await page.getByTestId('onboarding-modal-next-button').click();
-  const editingVideo = page.locator(
-    '[data-testid=onboarding-modal-editing-video]'
-  );
-  await expect(editingVideo).toBeVisible();
-  await page.getByTestId('onboarding-modal-close-button').click();
-
-  await expect(onboardingModal).toBeHidden();
-});
-
 test('windows only check', async ({ page }) => {
   const windowOnlyUI = page.locator('[data-platform-target=win32]');
   if (process.platform === 'win32') {

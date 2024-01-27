@@ -47,11 +47,6 @@ const TmpDisableAffineCloudModal = lazy(() =>
   )
 );
 
-const OnboardingModal = lazy(() =>
-  import('../components/affine/onboarding-modal').then(module => ({
-    default: module.OnboardingModal,
-  }))
-);
 const WorkspaceGuideModal = lazy(() =>
   import('../components/affine/onboarding/workspace-guide-modal').then(
     module => ({
@@ -184,11 +179,6 @@ export function CurrentWorkspaceModals() {
           onOpenChange={setOpenDisableCloudAlertModal}
         />
       </Suspense>
-      {environment.isDesktop && (
-        <Suspense>
-          <OnboardingModal />
-        </Suspense>
-      )}
       <StarAFFiNEModal />
       <IssueFeedbackModal />
       <WorkspaceGuideModal />

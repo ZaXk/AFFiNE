@@ -6,7 +6,7 @@ import { useAtomValue } from 'jotai/react';
 import { useCallback, useState } from 'react';
 import { useParams } from 'react-router-dom';
 
-import { openOnboardingModalAtom, openSettingModalAtom } from '../../../atoms';
+import { openSettingModalAtom } from '../../../atoms';
 import { currentModeAtom } from '../../../atoms/mode';
 import type { SettingProps } from '../../affine/setting-modal';
 import { ContactIcon, HelpIcon, KeyboardIcon } from './icons';
@@ -29,7 +29,6 @@ const showList = environment.isDesktop ? DESKTOP_SHOW_LIST : DEFAULT_SHOW_LIST;
 
 export const HelpIsland = () => {
   const mode = useAtomValue(currentModeAtom);
-  const setOpenOnboarding = useSetAtom(openOnboardingModalAtom);
   const setOpenSettingModalAtom = useSetAtom(openSettingModalAtom);
   const [spread, setShowSpread] = useState(false);
   const t = useAFFiNEI18N();
@@ -111,7 +110,6 @@ export const HelpIsland = () => {
               data-testid="easy-guide"
               onClick={() => {
                 setShowSpread(false);
-                setOpenOnboarding(true);
               }}
             >
               <UserGuideIcon />
