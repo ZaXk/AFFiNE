@@ -1,16 +1,17 @@
+import { cssVar } from '@toeverything/theme';
 import { style } from '@vanilla-extract/css';
 
 export const title = style({
   padding: '20px 24px 8px 24px',
-  fontSize: 'var(--affine-font-h-6)',
-  fontFamily: 'var(--affine-font-family)',
+  fontSize: cssVar('fontH6'),
+  fontFamily: cssVar('fontFamily'),
   fontWeight: '600',
   lineHeight: '26px',
 });
 
 export const content = style({
   padding: '0px 24px 8px',
-  fontSize: 'var(--affine-font-base)',
+  fontSize: cssVar('fontBase'),
   lineHeight: '24px',
   fontWeight: 400,
 });

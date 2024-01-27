@@ -1,30 +1,33 @@
 import { DialogTrigger } from '@radix-ui/react-dialog';
-import { memo, useCallback, useEffect } from 'react';
+import { cssVar } from '@toeverything/theme';
+import { memo, useCallback } from 'react';
 
-import { Button, type ButtonProps } from '../../ui/button';
-import { Modal, type ModalProps } from '../../ui/modal';
+import { Button, type ButtonProps } from '../button';
+import { Modal, type ModalProps } from '../modal';
 import * as styles from './overlay-modal.css';
 
 const defaultContentOptions: ModalProps['contentOptions'] = {
   style: {
     padding: 0,
     overflow: 'hidden',
-    boxShadow: 'var(--affine-menu-shadow)',
+    boxShadow: cssVar('menuShadow'),
   },
 };
 const defaultOverlayOptions: ModalProps['overlayOptions'] = {
   style: {
-    background: 'var(--affine-white-80)',
+    background: cssVar('white80'),
     backdropFilter: 'blur(2px)',
   },
 };
 
 export interface OverlayModalProps extends ModalProps {
+  to?: string;
   topImage?: React.ReactNode;
   confirmButtonOptions?: ButtonProps;
   onConfirm?: () => void;
   cancelText?: string;
   cancelButtonOptions?: ButtonProps;
+  withoutCancelButton?: boolean;
 }
 
 export const OverlayModal = memo(function OverlayModal({
@@ -34,30 +37,23 @@ export const OverlayModal = memo(function OverlayModal({
   title,
   description,
   onConfirm,
+  to,
   confirmButtonOptions,
   cancelButtonOptions,
+  withoutCancelButton,
   contentOptions = defaultContentOptions,
   overlayOptions = defaultOverlayOptions,
   // FIXME: we need i18n
   cancelText = 'Cancel',
   width = 400,
 }: OverlayModalProps) {
-  // blur modal background, can't use css: `backdrop-filter: blur()`,
-  // because it won't behave as expected on client side (texts over transparent window are not blurred)
-  useEffect(() => {
-    const appDom = document.querySelector('#app') as HTMLElement;
-    if (!appDom) return;
-    appDom.style.filter = open ? 'blur(7px)' : 'none';
-
-    return () => {
-      appDom.style.filter = 'none';
-    };
-  }, [open]);
-
   const handleConfirm = useCallback(() => {
+    if (to) {
+      window.open(to, '_blank');
+    }
     onOpenChange?.(false);
     onConfirm?.();
-  }, [onOpenChange, onConfirm]);
+  }, [to, onOpenChange, onConfirm]);
 
   return (
     <Modal
@@ -72,9 +68,11 @@ export const OverlayModal = memo(function OverlayModal({
       <div className={styles.title}>{title}</div>
       <div className={styles.content}>{description}</div>
       <div className={styles.footer}>
-        <DialogTrigger asChild>
-          <Button {...cancelButtonOptions}>{cancelText}</Button>
-        </DialogTrigger>
+        {!withoutCancelButton ? (
+          <DialogTrigger asChild>
+            <Button {...cancelButtonOptions}>{cancelText}</Button>
+          </DialogTrigger>
+        ) : null}
         <Button onClick={handleConfirm} {...confirmButtonOptions}></Button>
       </div>
     </Modal>
