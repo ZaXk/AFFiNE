@@ -58,8 +58,8 @@ export const WorkspaceGuideModal = memo(function WorkspaceGuideModal() {
         },
         type: 'primary',
         size: 'large',
-        children: t['com.affine.onboarding.workspace-guide.got-it'](),
       }}
+      confirmText={t['com.affine.onboarding.workspace-guide.got-it']()}
     />
   );
 });

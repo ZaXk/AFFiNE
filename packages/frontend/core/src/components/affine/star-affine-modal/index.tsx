@@ -13,6 +13,7 @@ export const StarAFFiNEModal = () => {
       topImage={
         <video
           width={400}
+          height={300}
           style={{ objectFit: 'cover' }}
           src={'/static/gitHubStar.mp4'}
           autoPlay
@@ -26,8 +27,9 @@ export const StarAFFiNEModal = () => {
       to={runtimeConfig.githubUrl}
       confirmButtonOptions={{
         type: 'primary',
-        children: t['com.affine.star-affine.confirm'](),
       }}
+      confirmText={t['com.affine.star-affine.confirm']()}
+      external
     />
   );
 };

@@ -25,10 +25,6 @@ test('new page', async ({ page, workspace }) => {
 // macOS only
 // if (platform() === 'darwin') {
 test('app sidebar router forward/back', async ({ page }) => {
-  await page.getByTestId('help-island').click();
-  await page.getByTestId('easy-guide').click();
-  await page.getByTestId('onboarding-modal-next-button').click();
-  await page.getByTestId('onboarding-modal-close-button').click();
   {
     // create pages
     await page.waitForTimeout(500);

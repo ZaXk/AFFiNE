@@ -15,7 +15,6 @@ export * from './ui/lottie/collections-icon';
 export * from './ui/lottie/delete-icon';
 export * from './ui/menu';
 export * from './ui/modal';
-export * from './ui/overlay-modal';
 export * from './ui/popover';
 export * from './ui/scrollbar';
 export * from './ui/skeleton';

@@ -1,9 +1,10 @@
 import { DialogTrigger } from '@radix-ui/react-dialog';
 import { cssVar } from '@toeverything/theme';
 import { memo, useCallback } from 'react';
+import { Link } from 'react-router-dom';
 
 import { Button, type ButtonProps } from '../button';
-import { Modal, type ModalProps } from '../modal';
+import { Modal, type ModalProps } from './modal';
 import * as styles from './overlay-modal.css';
 
 const defaultContentOptions: ModalProps['contentOptions'] = {
@@ -22,7 +23,9 @@ const defaultOverlayOptions: ModalProps['overlayOptions'] = {
 
 export interface OverlayModalProps extends ModalProps {
   to?: string;
+  external?: boolean;
   topImage?: React.ReactNode;
+  confirmText?: string;
   confirmButtonOptions?: ButtonProps;
   onConfirm?: () => void;
   cancelText?: string;
@@ -38,6 +41,7 @@ export const OverlayModal = memo(function OverlayModal({
   description,
   onConfirm,
   to,
+  external,
   confirmButtonOptions,
   cancelButtonOptions,
   withoutCancelButton,
@@ -45,15 +49,13 @@ export const OverlayModal = memo(function OverlayModal({
   overlayOptions = defaultOverlayOptions,
   // FIXME: we need i18n
   cancelText = 'Cancel',
+  confirmText = 'Confirm',
   width = 400,
 }: OverlayModalProps) {
   const handleConfirm = useCallback(() => {
-    if (to) {
-      window.open(to, '_blank');
-    }
     onOpenChange?.(false);
     onConfirm?.();
-  }, [to, onOpenChange, onConfirm]);
+  }, [onOpenChange, onConfirm]);
 
   return (
     <Modal
@@ -73,7 +75,27 @@ export const OverlayModal = memo(function OverlayModal({
             <Button {...cancelButtonOptions}>{cancelText}</Button>
           </DialogTrigger>
         ) : null}
-        <Button onClick={handleConfirm} {...confirmButtonOptions}></Button>
+
+        {to ? (
+          external ? (
+            //FIXME: we need a more standardized way to implement this link with other click events
+            <a href={to} target="_blank" rel="noreferrer">
+              <Button onClick={handleConfirm} {...confirmButtonOptions}>
+                {confirmText}
+              </Button>
+            </a>
+          ) : (
+            <Link to={to}>
+              <Button onClick={handleConfirm} {...confirmButtonOptions}>
+                {confirmText}
+              </Button>
+            </Link>
+          )
+        ) : (
+          <Button onClick={handleConfirm} {...confirmButtonOptions}>
+            {confirmText}
+          </Button>
+        )}
       </div>
     </Modal>
   );

@@ -43,10 +43,11 @@ export const footer = style({
   alignItems: 'center',
   paddingBottom: '20px',
   gap: '4px',
-  fontSize: 'var(--affine-font-xs)',
+  fontSize: cssVar('fontXs'),
+  flexWrap: 'wrap',
 });
 
 export const link = style({
-  color: 'var(--affine-link-color)',
+  color: cssVar('linkColor'),
   cursor: 'pointer',
 });

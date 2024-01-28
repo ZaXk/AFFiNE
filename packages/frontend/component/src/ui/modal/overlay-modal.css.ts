@@ -26,3 +26,12 @@ export const footer = style({
 export const gotItBtn = style({
   fontWeight: 500,
 });
+
+export const buttonText = style({
+  color: cssVar('pureWhite'),
+  textDecoration: 'none',
+  cursor: 'pointer',
+  ':visited': {
+    color: cssVar('pureWhite'),
+  },
+});
