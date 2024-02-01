@@ -31,6 +31,7 @@ export function getRuntimeConfig(buildFlags: BuildFlags): RuntimeConfig {
       enableEnhanceShareMode: false,
       enablePayment: true,
       enablePageHistory: true,
+      allowLocalWorkspace: false,
       serverUrlPrefix: 'https://app.affine.pro',
       editorFlags,
       appVersion: packageJson.version,
@@ -72,6 +73,7 @@ export function getRuntimeConfig(buildFlags: BuildFlags): RuntimeConfig {
       enableEnhanceShareMode: false,
       enablePayment: true,
       enablePageHistory: true,
+      allowLocalWorkspace: false,
       serverUrlPrefix: 'https://affine.fail',
       editorFlags,
       appVersion: packageJson.version,
@@ -135,6 +137,11 @@ export function getRuntimeConfig(buildFlags: BuildFlags): RuntimeConfig {
       : buildFlags.mode === 'development'
         ? true
         : currentBuildPreset.enablePageHistory,
+    allowLocalWorkspace: process.env.ALLOW_LOCAL_WORKSPACE
+      ? process.env.ALLOW_LOCAL_WORKSPACE === 'true'
+      : buildFlags.mode === 'development'
+        ? true
+        : currentBuildPreset.allowLocalWorkspace,
   };
 
   if (buildFlags.mode === 'development') {
@@ -146,6 +153,6 @@ export function getRuntimeConfig(buildFlags: BuildFlags): RuntimeConfig {
     // environment preset will overwrite current build preset
     // this environment variable is for debug proposes only
     // do not put them into CI
-    ...(process.env.CI ? {} : environmentPreset),
+    ...(process.env.CI ? { allowLocalWorkspace: true } : environmentPreset),
   };
 }
