@@ -133,7 +133,7 @@ test('Create a new page without keyword', async ({ page }) => {
   await waitForEditorLoad(page);
   await clickNewPageButton(page);
   await openQuickSearchByShortcut(page);
-  const addNewPage = page.locator('[cmdk-item] >> text=New Page');
+  const addNewPage = page.locator('[cmdk-item] >> text=New Doc');
   await addNewPage.click();
   await page.waitForTimeout(300);
   await assertTitle(page, '');
@@ -145,9 +145,7 @@ test('Create a new page with keyword', async ({ page }) => {
   await clickNewPageButton(page);
   await openQuickSearchByShortcut(page);
   await insertInputText(page, '"test123456"');
-  const addNewPage = page.locator(
-    '[cmdk-item] >> text=New ""test123456"" Page'
-  );
+  const addNewPage = page.locator('[cmdk-item] >> text=New ""test123456"" Doc');
   await addNewPage.click();
   await page.waitForTimeout(300);
   await assertTitle(page, '"test123456"');
@@ -169,7 +167,7 @@ test('Create a new page and search this page', async ({ page }) => {
   // input title and create new page
   await insertInputText(page, 'test123456');
   await page.waitForTimeout(300);
-  const addNewPage = page.locator('[cmdk-item] >> text=New "test123456" Page');
+  const addNewPage = page.locator('[cmdk-item] >> text=New "test123456" Doc');
   await addNewPage.click();
 
   await page.waitForTimeout(300);
@@ -238,7 +236,7 @@ test('Focus title after creating a new page', async ({ page }) => {
   await waitForEditorLoad(page);
   await clickNewPageButton(page);
   await openQuickSearchByShortcut(page);
-  const addNewPage = page.locator('[cmdk-item] >> text=New Page');
+  const addNewPage = page.locator('[cmdk-item] >> text=New Doc');
   await addNewPage.click();
   await titleIsFocused(page);
 });
@@ -270,7 +268,7 @@ test('assert the recent browse pages are on the recent list', async ({
 
   // create second page
   await openQuickSearchByShortcut(page);
-  const addNewPage = page.locator('[cmdk-item] >> text=New Page');
+  const addNewPage = page.locator('[cmdk-item] >> text=New Doc');
   await addNewPage.click();
   await waitForEditorLoad(page);
   {
@@ -308,7 +306,7 @@ test('assert the recent browse pages are on the recent list', async ({
   await waitForEditorLoad(page);
   await openQuickSearchByShortcut(page);
   {
-    const addNewPage = page.locator('[cmdk-item] >> text=New Page');
+    const addNewPage = page.locator('[cmdk-item] >> text=New Doc');
     await addNewPage.click();
   }
   await waitForEditorLoad(page);
