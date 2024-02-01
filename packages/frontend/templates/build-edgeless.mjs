@@ -193,8 +193,7 @@ const buildScript = async templates => {
     })
     .join('\n');
 
-  const code = `
-${importStatements}
+  const code = `${importStatements}
 
 const templates = {
   'Marketing': [

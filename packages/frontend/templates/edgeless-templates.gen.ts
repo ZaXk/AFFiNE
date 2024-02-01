@@ -9,29 +9,43 @@ import GanttChart from './edgeless/Gantt Chart.json';
 import MonthlyCalendar from './edgeless/Monthly Calendar.json';
 import ProjectPlanning from './edgeless/Project Planning.json';
 import ProjectTrackingKanban from './edgeless/Project Tracking Kanban.json';
-import SimplePresentation from './edgeless/Simple Presentation.json';
 import SMART from './edgeless/SMART.json';
-import Storyboard from './edgeless/Storyboard.json';
 import SWOT from './edgeless/SWOT.json';
+import SimplePresentation from './edgeless/Simple Presentation.json';
+import Storyboard from './edgeless/Storyboard.json';
 import UserJourneyMap from './edgeless/User Journey Map.json';
 
 const templates = {
-  Marketing: [Storyboard, FourPMarketingMatrix, UserJourneyMap],
+  'Marketing': [
+    Storyboard,
+    FourPMarketingMatrix,
+    UserJourneyMap
+  ],
   'Project management': [
     GanttChart,
     ProjectTrackingKanban,
     FishboneDiagram,
     ProjectPlanning,
-    MonthlyCalendar,
+    MonthlyCalendar
   ],
-  Brainstorming: [SWOT, FiveWTwoH, Flowchart, ConceptMap, SMART],
-  Presentation: [DataAnalysis, SimplePresentation, BusinessProposal],
-};
+  'Brainstorming': [
+    SWOT,
+    FiveWTwoH,
+    Flowchart,
+    ConceptMap,
+    SMART,
+  ],
+  'Presentation': [
+    DataAnalysis,
+    SimplePresentation,
+    BusinessProposal
+  ]
+}
 
 function lcs(text1: string, text2: string) {
   const dp: number[][] = Array.from({ length: text1.length + 1 })
     .fill(null)
-    .map(() => Array.from<number>({ length: text2.length + 1 }).fill(0));
+    .map(() => Array.from<number>({length: text2.length + 1}).fill(0));
 
   for (let i = 1; i <= text1.length; i++) {
     for (let j = 1; j <= text2.length; j++) {
@@ -49,25 +63,25 @@ function lcs(text1: string, text2: string) {
 export const builtInTemplates = {
   list: async (category: string) => {
     // @ts-expect-error type should be asserted when using
-    return templates[category] ?? [];
+    return templates[category] ?? []
   },
 
   categories: async () => {
-    return Object.keys(templates);
+    return Object.keys(templates)
   },
 
-  search: async (query: string) => {
+  search: async(query: string) => {
     const candidates: unknown[] = [];
     const cates = Object.keys(templates);
 
     query = query.toLowerCase();
 
-    for (const cate of cates) {
+    for(let cate of cates) {
       // @ts-expect-error type should be asserted when using
       const templatesOfCate = templates[cate];
 
-      for (const temp of templatesOfCate) {
-        if (lcs(query, temp.name.toLowerCase()) === query.length) {
+      for(let temp of templatesOfCate) {
+        if(lcs(query, temp.name.toLowerCase()) === query.length) {
           candidates.push(temp);
         }
       }
@@ -75,4 +89,4 @@ export const builtInTemplates = {
 
     return candidates;
   },
-};
+}

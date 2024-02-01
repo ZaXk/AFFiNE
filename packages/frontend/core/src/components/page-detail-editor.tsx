@@ -46,9 +46,10 @@ function useRouterHash() {
 
 let extended = false;
 function useEdgelessTemplate() {
-  !extended &&
+  if (!extended) {
     EdgelessTemplatePanel.templates.extend(builtInTemplates as TemplateManager);
-  extended = true;
+    extended = true;
+  }
 }
 
 const PageDetailEditorMain = memo(function PageDetailEditorMain({
