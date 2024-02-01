@@ -1,44 +1,44 @@
-import FourPMarketingMatrix from './edgeless/4P Marketing Matrix.json';
 import FiveWTwoH from './edgeless/5W2H.json';
-import BusinessProposal from './edgeless/Business Proposal.json';
 import ConceptMap from './edgeless/Concept Map.json';
-import DataAnalysis from './edgeless/Data Analysis.json';
-import FishboneDiagram from './edgeless/Fishbone Diagram.json';
 import Flowchart from './edgeless/Flowchart.json';
+import SMART from './edgeless/SMART.json';
+import SWOT from './edgeless/SWOT.json';
+import FourPMarketingMatrix from './edgeless/4P Marketing Matrix.json';
+import Storyboard from './edgeless/Storyboard.json';
+import UserJourneyMap from './edgeless/User Journey Map.json';
+import BusinessProposal from './edgeless/Business Proposal.json';
+import DataAnalysis from './edgeless/Data Analysis.json';
+import SimplePresentation from './edgeless/Simple Presentation.json';
+import FishboneDiagram from './edgeless/Fishbone Diagram.json';
 import GanttChart from './edgeless/Gantt Chart.json';
 import MonthlyCalendar from './edgeless/Monthly Calendar.json';
 import ProjectPlanning from './edgeless/Project Planning.json';
 import ProjectTrackingKanban from './edgeless/Project Tracking Kanban.json';
-import SMART from './edgeless/SMART.json';
-import SWOT from './edgeless/SWOT.json';
-import SimplePresentation from './edgeless/Simple Presentation.json';
-import Storyboard from './edgeless/Storyboard.json';
-import UserJourneyMap from './edgeless/User Journey Map.json';
 
 const templates = {
+  'Brainstorming': [
+    FiveWTwoH,
+    ConceptMap,
+    Flowchart,
+    SMART,
+    SWOT
+  ],
   'Marketing': [
-    Storyboard,
     FourPMarketingMatrix,
+    Storyboard,
     UserJourneyMap
   ],
-  'Project management': [
-    GanttChart,
-    ProjectTrackingKanban,
-    FishboneDiagram,
-    ProjectPlanning,
-    MonthlyCalendar
-  ],
-  'Brainstorming': [
-    SWOT,
-    FiveWTwoH,
-    Flowchart,
-    ConceptMap,
-    SMART,
-  ],
   'Presentation': [
+    BusinessProposal,
     DataAnalysis,
-    SimplePresentation,
-    BusinessProposal
+    SimplePresentation
+  ],
+  'Project Management': [
+    FishboneDiagram,
+    GanttChart,
+    MonthlyCalendar,
+    ProjectPlanning,
+    ProjectTrackingKanban
   ]
 }
 

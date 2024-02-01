@@ -1,3 +1,4 @@
+import { existsSync, mkdirSync, readFileSync, statSync } from 'node:fs';
 import fs from 'node:fs/promises';
 import path, { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -10,17 +11,31 @@ const ASSETS_PREFIX = `/static/templates`;
 const ASSETS_PATH = join(__dirname, '../core/public/', ASSETS_PREFIX);
 const TEMPLATE_PATH = join(__dirname, './edgeless');
 
-const zipFiles = fs.readdir(ZIP_PATH).then(files => {
-  return files.filter(file => path.extname(file) === '.zip');
-});
+const getZipFilesInCategroies = () => {
+  return fs.readdir(ZIP_PATH).then(folders => {
+    return Promise.all(
+      folders
+        .filter(folder => {
+          return statSync(join(ZIP_PATH, folder)).isDirectory();
+        })
+        .map(async folder => {
+          const files = await fs.readdir(join(ZIP_PATH, folder));
+          return {
+            category: folder,
+            files: files.filter(file => path.extname(file) === '.zip'),
+          };
+        })
+    );
+  });
+};
 
 const setupFolder = async () => {
-  if (!fs.existsSync(ASSETS_PATH)) {
-    fs.mkdirSync(ASSETS_PATH);
+  if (!existsSync(ASSETS_PATH)) {
+    mkdirSync(ASSETS_PATH);
   }
 
-  if (!fs.existsSync(TEMPLATE_PATH)) {
-    fs.mkdirSync(TEMPLATE_PATH);
+  if (!existsSync(TEMPLATE_PATH)) {
+    mkdirSync(TEMPLATE_PATH);
   }
 };
 
@@ -36,103 +51,128 @@ const setupFolder = async () => {
 /**
  * @param {Block} block
  */
-const convertSourceId = block => {
+const convertSourceId = (block, assetsExtMap) => {
   if (block.props?.sourceId) {
-    block.props.sourceId = `${ASSETS_PREFIX}/${block.props.sourceId}.png`;
+    const extname = assetsExtMap[block.props.sourceId];
+    if (!extname) {
+      console.warn(`No extname found for ${block.props.sourceId}`);
+    }
+    block.props.sourceId = `${ASSETS_PREFIX}/${block.props.sourceId}${
+      extname ?? ''
+    }`;
   }
 
   if (block.children && Array.isArray(block.children)) {
-    block.children.forEach(convertSourceId);
+    block.children.forEach(block => convertSourceId(block, assetsExtMap));
   }
 };
 
 const parseSnapshot = async () => {
-  const files = await zipFiles;
+  const filesInCategroies = await getZipFilesInCategroies();
   await setupFolder();
-  const templates = [];
+  /**
+   * @type {Array<{ category: string, templates: string[] }}>}
+   */
+  const templatesInCategory = [];
 
-  for (let file of files) {
-    const filePath = path.join(ZIP_PATH, file);
-    const templateName = path.basename(file, '.zip');
-    const zip = new JSZip();
-    const { files: unarchivedFiles } = await zip.loadAsync(
-      fs.readFileSync(filePath)
-    );
-    /**
-     * @type {Array<JSZip.JSZipObject>}
-     */
-    const assetsFiles = [];
-    /**
-     * @type {Array<JSZip.JSZipObject>}
-     */
-    const snapshotFiles = [];
+  for (let cate of filesInCategroies) {
+    const templates = [];
+    const assetsExtentionMap = {};
 
-    Object.entries(unarchivedFiles).forEach(([name, fileObj]) => {
-      if (name.includes('MACOSX') || name.includes('__MACOSX')) return;
+    for (let file of cate.files) {
+      const templateName = path.basename(file, '.zip');
+      const zip = new JSZip();
+      const { files: unarchivedFiles } = await zip.loadAsync(
+        readFileSync(join(ZIP_PATH, cate.category, file))
+      );
+      /**
+       * @type {Array<JSZip.JSZipObject>}
+       */
+      const assetsFiles = [];
+      /**
+       * @type {Array<JSZip.JSZipObject>}
+       */
+      const snapshotFiles = [];
 
-      if (name.startsWith('assets/') && !fileObj.dir) {
-        assetsFiles.push(fileObj);
-        return;
-      }
+      Object.entries(unarchivedFiles).forEach(([name, fileObj]) => {
+        if (name.includes('MACOSX') || name.includes('__MACOSX')) return;
 
-      if (name.endsWith('.snapshot.json')) {
-        snapshotFiles.push(fileObj);
-        return;
-      }
-    });
-
-    await Promise.all(
-      assetsFiles.map(async file => {
-        const blob = await file.async('blob');
-        const arrayBuffer = await blob.arrayBuffer();
-        const buffer = Buffer.from(arrayBuffer, 'binary');
-
-        await fs.writeFile(
-          join(ASSETS_PATH, file.name.replace('assets/', '')),
-          buffer
-        );
-      })
-    );
-
-    await Promise.all(
-      snapshotFiles.map(async snapshot => {
-        const json = await snapshot.async('text');
-        const snapshotContent = JSON.parse(json);
-        let previewContent = '';
-
-        if (fs.existsSync(join(ZIP_PATH, `${templateName}.svg`))) {
-          const previewFile = fs.readFileSync(
-            join(ZIP_PATH, `${templateName}.svg`),
-            'utf-8'
-          );
-          previewContent = previewFile
-            .replace(/\n/g, '')
-            .replace(/\s+/g, ' ')
-            .replace('fill="white"', 'fill="currentColor"');
-        } else {
-          console.warn(`No preview found for ${templateName}`);
+        if (name.startsWith('assets/') && !fileObj.dir) {
+          assetsFiles.push(fileObj);
+          return;
         }
 
-        convertSourceId(snapshotContent.blocks);
+        if (name.endsWith('.snapshot.json')) {
+          snapshotFiles.push(fileObj);
+          return;
+        }
+      });
 
-        const template = {
-          name: templateName,
-          type: 'template',
-          preview: previewContent,
-          content: snapshotContent,
-        };
+      await Promise.all(
+        assetsFiles.map(async file => {
+          const blob = await file.async('blob');
+          const arrayBuffer = await blob.arrayBuffer();
+          const buffer = Buffer.from(arrayBuffer, 'binary');
+          const extname = path.extname(file.name);
 
-        await fs.writeFile(
-          join(join(TEMPLATE_PATH, `${templateName}.json`)),
-          JSON.stringify(template, undefined, 2)
-        );
+          assetsExtentionMap[
+            file.name.replace('assets/', '').replace(extname, '')
+          ] = extname;
 
-        templates.push(templateName);
-      })
-    );
+          await fs.writeFile(
+            join(ASSETS_PATH, file.name.replace('assets/', '')),
+            buffer
+          );
+        })
+      );
+
+      await Promise.all(
+        snapshotFiles.map(async snapshot => {
+          const json = await snapshot.async('text');
+          const snapshotContent = JSON.parse(json);
+          const previewPath = join(
+            ZIP_PATH,
+            cate.category,
+            `${templateName}.svg`
+          );
+          let previewContent = '';
+
+          if (existsSync(previewPath)) {
+            const previewFile = readFileSync(previewPath, 'utf-8');
+            previewContent = previewFile
+              .replace(/\n/g, '')
+              .replace(/\s+/g, ' ')
+              .replace('fill="white"', 'fill="currentColor"');
+          } else {
+            console.warn(`No preview found for ${templateName}`);
+          }
+
+          convertSourceId(snapshotContent.blocks, assetsExtentionMap);
+
+          const template = {
+            name: templateName,
+            type: 'template',
+            preview: previewContent,
+            content: snapshotContent,
+          };
+
+          await fs.writeFile(
+            join(join(TEMPLATE_PATH, `${templateName}.json`)),
+            JSON.stringify(template, undefined, 2)
+          );
+
+          templates.push(templateName);
+        })
+      );
+    }
+
+    templatesInCategory.push({
+      category: cate.category,
+      templates,
+    });
   }
 
-  return templates;
+  return templatesInCategory;
 };
 
 function numberToWords(n) {
@@ -177,13 +217,19 @@ const toVariableName = name => {
 
 /**
  *
- * @param {Array<string>} templates
+ * @param {Array<{category: string, templates: string[]}} templatesInGroup
  */
-const buildScript = async templates => {
-  const templateVariableMap = templates.reduce((map, template) => {
-    map[template] = toVariableName(template);
-    return map;
-  }, {});
+const buildScript = async templatesInGroup => {
+  const templates = [];
+  const templateVariableMap = {};
+
+  templatesInGroup.forEach(group => {
+    group.templates.forEach(template => {
+      templates.push(template);
+      templateVariableMap[template] = toVariableName(template);
+    });
+  });
+
   const importStatements = templates
     .map(template => {
       return `import ${toVariableName(
@@ -191,34 +237,18 @@ const buildScript = async templates => {
       )} from './edgeless/${template}.json';`;
     })
     .join('\n');
+  const templatesDeclaration = templatesInGroup.map(group => {
+    return `'${group.category}': [
+    ${group.templates
+      .map(template => templateVariableMap[template])
+      .join(',\n    ')}
+  ]`;
+  });
 
   const code = `${importStatements}
 
 const templates = {
-  'Marketing': [
-    ${templateVariableMap['Storyboard']},
-    ${templateVariableMap['4P Marketing Matrix']},
-    ${templateVariableMap['User Journey Map']}
-  ],
-  'Project management': [
-    ${templateVariableMap['Gantt Chart']},
-    ${templateVariableMap['Project Tracking Kanban']},
-    ${templateVariableMap['Fishbone Diagram']},
-    ${templateVariableMap['Project Planning']},
-    ${templateVariableMap['Monthly Calendar']}
-  ],
-  'Brainstorming': [
-    ${templateVariableMap['SWOT']},
-    ${templateVariableMap['5W2H']},
-    ${templateVariableMap['Flowchart']},
-    ${templateVariableMap['Concept Map']},
-    ${templateVariableMap['SMART']},
-  ],
-  'Presentation': [
-    ${templateVariableMap['Data Analysis']},
-    ${templateVariableMap['Simple Presentation']},
-    ${templateVariableMap['Business Proposal']}
-  ]
+  ${templatesDeclaration.join(',\n  ')}
 }
 
 function lcs(text1: string, text2: string) {
@@ -277,8 +307,8 @@ export const builtInTemplates = {
 };
 
 async function main() {
-  const templates = await parseSnapshot();
-  await buildScript(templates);
+  const templatesInGroup = await parseSnapshot();
+  await buildScript(templatesInGroup);
 }
 
 main();
