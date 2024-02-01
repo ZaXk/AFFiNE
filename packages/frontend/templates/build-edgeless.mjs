@@ -1,7 +1,6 @@
-import fs from 'node:fs';
+import fs from 'node:fs/promises';
 import path, { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { promisify } from 'node:util';
 
 import JSZip from 'jszip';
 
@@ -11,7 +10,7 @@ const ASSETS_PREFIX = `/static/templates`;
 const ASSETS_PATH = join(__dirname, '../core/public/', ASSETS_PREFIX);
 const TEMPLATE_PATH = join(__dirname, './edgeless');
 
-const zipFiles = promisify(fs.readdir)(ZIP_PATH).then(files => {
+const zipFiles = fs.readdir(ZIP_PATH).then(files => {
   return files.filter(file => path.extname(file) === '.zip');
 });
 
@@ -88,7 +87,7 @@ const parseSnapshot = async () => {
         const arrayBuffer = await blob.arrayBuffer();
         const buffer = Buffer.from(arrayBuffer, 'binary');
 
-        await promisify(fs.writeFile)(
+        await fs.writeFile(
           join(ASSETS_PATH, file.name.replace('assets/', '')),
           buffer
         );
@@ -123,7 +122,7 @@ const parseSnapshot = async () => {
           content: snapshotContent,
         };
 
-        await promisify(fs.writeFile)(
+        await fs.writeFile(
           join(join(TEMPLATE_PATH, `${templateName}.json`)),
           JSON.stringify(template, undefined, 2)
         );
@@ -272,13 +271,9 @@ export const builtInTemplates = {
 }
 `;
 
-  await promisify(fs.writeFile)(
-    join(__dirname, './edgeless-templates.gen.ts'),
-    code,
-    {
-      encoding: 'utf-8',
-    }
-  );
+  await fs.writeFile(join(__dirname, './edgeless-templates.gen.ts'), code, {
+    encoding: 'utf-8',
+  });
 };
 
 async function main() {
